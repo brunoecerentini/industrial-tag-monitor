@@ -405,8 +405,8 @@ if __name__ == "__main__":
     
     # ========== AUTENTICAÇÃO ==========
     # Usuário da API do KepServer (não é usuário Windows!)
-    KEP_USER = "apiuser"
-    KEP_PASS = "kepAdmin2025asd"
+    KEP_USER = "Administrator"
+    KEP_PASS = "" # PREENCHA A SENHA AQUI
     
     USE_HTTPS = False  # Mude para False se quiser usar HTTP (porta 57412)
     

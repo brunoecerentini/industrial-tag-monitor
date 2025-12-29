@@ -20,10 +20,10 @@ if %errorLevel% neq 0 (
 
 REM Configurações
 set SERVICE_NAME=SeedLossMonitor
-set PROJECT_DIR=C:\Users\whs913\Desktop\kepserver_env
-set PYTHON_PATH=C:\Users\whs913\Desktop\kepserver_env\venv\Scripts\python.exe
-set SCRIPT_PATH=C:\Users\whs913\Desktop\kepserver_env\cam_monitor_service.py
-set NSSM_PATH=C:\Users\whs913\Desktop\kepserver_env\nssm.exe
+set PROJECT_DIR=%~dp0
+set PYTHON_PATH=%PROJECT_DIR%venv\Scripts\python.exe
+set SCRIPT_PATH=%PROJECT_DIR%cam_monitor_service.py
+set NSSM_PATH=%PROJECT_DIR%nssm.exe
 
 REM Verificar se NSSM existe
 if not exist "%NSSM_PATH%" (

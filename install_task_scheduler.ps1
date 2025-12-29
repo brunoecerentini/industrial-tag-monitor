@@ -19,9 +19,9 @@ if (-not $isAdmin) {
 
 # Configurações
 $TaskName = "SeedLossMonitor"
-$ProjectDir = "C:\Users\whs913\Desktop\kepserver_env"
-$PythonPath = "C:\Users\whs913\Desktop\kepserver_env\venv\Scripts\python.exe"
-$ScriptPath = "C:\Users\whs913\Desktop\kepserver_env\cam_monitor_service.py"
+$ProjectDir = $PSScriptRoot
+$PythonPath = Join-Path $ProjectDir "venv\Scripts\python.exe"
+$ScriptPath = Join-Path $ProjectDir "cam_monitor_service.py"
 
 # Verificar se Python existe, senão usar do sistema
 if (-not (Test-Path $PythonPath)) {

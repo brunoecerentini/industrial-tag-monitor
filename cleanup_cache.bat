@@ -9,7 +9,7 @@ echo  LIMPEZA DE CACHE - SEED LOSS MONITOR
 echo ============================================
 echo.
 
-set PROJECT_DIR=C:\Users\whs913\Desktop\kepserver_env
+set PROJECT_DIR=%~dp0
 set LOG_DIR=%PROJECT_DIR%\logs
 set DIAS_MANTER=30
 

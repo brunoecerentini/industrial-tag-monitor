@@ -5,7 +5,7 @@ REM Para uso com NSSM ou Task Scheduler
 REM ============================================
 
 REM Configurar diretório de trabalho
-cd /d "C:\Users\whs913\Desktop\kepserver_env"
+cd /d "%~dp0"
 
 REM Ativar ambiente virtual (se existir)
 if exist "venv\Scripts\activate.bat" (
