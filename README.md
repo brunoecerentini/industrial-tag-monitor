@@ -1,56 +1,41 @@
-# Industrial Data Pipeline & Tag Monitor
+# Industrial Data Pipeline & Tag Automation
 
-Este projeto é uma solução robusta para aquisição, monitoramento e persistência de dados industriais (IIoT). Ele atua como um middleware entre chão de fábrica (OPC UA / KepServer) e sistemas corporativos (SQL Server), garantindo integridade de dados e alta disponibilidade.
-
-## 🚀 Funcionalidades Principais
-
-*   **Aquisição OPC UA:** Conexão nativa com servidores OPC UA (ex: KepServerEx) para leitura de tags em tempo real.
-*   **Persistência Resiliente:** Gravação em SQL Server com tratamento de falhas de conexão.
-*   **Buffer Local (Failover):** Sistema de backup automático em CSV caso o banco de dados esteja indisponível, garantindo zero perda de dados.
-*   **Gestão de Recursos:** Monitoramento de memória e limpeza automática de cache para operação contínua 24/7.
-*   **Integração Windows Service:** Scripts preparados para execução como serviços Windows (via NSSM) com rotação de logs.
-*   **Schema Protection:** Verificação e correção automática de tipos de dados (overflow protection) no banco SQL.
-
-## 🛠️ Tecnologias Utilizadas
-
-*   **Linguagem:** Python 3.10+
-*   **Protocolos:** OPC UA (Binary)
-*   **Banco de Dados:** Microsoft SQL Server
-*   **Bibliotecas Chave:**
-    *   `opcua`: Cliente OPC UA assíncrono/síncrono.
-    *   `pyodbc`: Conectividade ODBC de alta performance.
-    *   `lxml`: Processamento eficiente de dados.
+Este repositório contém ferramentas para automação industrial, divididas em dois módulos principais: monitoramento de dados (OT -> IT) e automação de engenharia (criação de tags).
 
 ## 📂 Estrutura do Projeto
 
-*   `cam_monitor_service.py`: Script principal do serviço de monitoramento.
-*   `create_tag2.py`: Automação para criação em massa de tags no KepServer via API REST/Configuration.
-*   `setup_seed_loss.sql`: Scripts DDL para criação da estrutura de banco de dados.
-*   `deploy_package/`: Ferramentas para empacotamento e deploy offline em ambiente fabril.
+### 1. `monitor_service/` (Serviço de Coleta)
+Serviço crítico para execução 24/7 em chão de fábrica.
+*   **Função:** Coleta dados via OPC UA e persiste no SQL Server.
+*   **Destaques:** Proteção contra perda de dados (buffer local CSV), limpeza automática de cache e integração com serviços Windows.
+*   **Portas:** Usa porta OPC UA (default: 49320) e SQL Server (1433/1600).
 
-## ⚙️ Instalação e Configuração
+### 2. `tag_automation/` (Engenharia)
+Ferramentas para ganho de produtividade na configuração do SCADA/OPC.
+*   **Função:** Criação em massa de tags no KepServerEX via API REST.
+*   **Destaques:** Converte listas CSV/Excel em configuração de tags, economizando horas de trabalho manual.
+*   **Portas:** Usa porta HTTP/REST do KepServer (default: 57412).
 
-1.  **Pré-requisitos:**
-    *   Python 3.10 ou superior.
-    *   Driver ODBC para SQL Server instalado no sistema.
+### 3. `utils/`
+Scripts auxiliares e testes.
 
-2.  **Instalação das dependências:**
+## 🚀 Como Usar
+
+### Instalação Geral
+```bash
+pip install -r requirements.txt
+```
+
+### Para rodar o Monitoramento
+1.  Configure as variáveis no arquivo `monitor_service/cam_monitor_service.py` ou `config.ini`.
+2.  Instale como serviço usando os scripts na pasta `monitor_service/`.
+
+### Para criar Tags
+1.  Edite sua lista de tags em `tag_automation/taglist.csv`.
+2.  Execute:
     ```bash
-    pip install -r requirements.txt
+    python tag_automation/create_tag2.py
     ```
 
-3.  **Configuração do Banco de Dados:**
-    Execute o script `setup_seed_loss.sql` no seu servidor SQL para criar a tabela e índices necessários.
-
-4.  **Configuração do Ambiente:**
-    Verifique as variáveis de conexão no arquivo `cam_monitor_service.py` ou `config.ini`:
-    *   `OPC_URL`: Endpoint do servidor OPC.
-    *   `DB_SERVER`: Endereço do SQL Server.
-
-## 📦 Deploy como Serviço
-
-O projeto inclui scripts `.bat` e configurações para deploy automatizado usando NSSM (Non-Sucking Service Manager), ideal para servidores de produção que requerem reinício automático e execução em background.
-
 ---
-*Desenvolvido para garantir a confiabilidade de dados na indústria 4.0.*
-
+*Organizado para escalabilidade e manutenção.*
