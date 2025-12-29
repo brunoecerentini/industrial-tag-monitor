@@ -1,0 +1,30 @@
+=== Log de Conversao ===
+Iniciando script...
+Python version: 3.12.3 (tags/v3.12.3:f6650f9, Apr  9 2024, 14:05:25) [MSC v.1938 64 bit (AMD64)]
+Diretorio: c:\Users\bruno\Desktop\Monitorartags
+Pandas importado: 2.3.2
+Openpyxl importado: 3.1.5
+============================================================
+Conversor TagList -> Template Deloitte IP21
+============================================================
+Lendo arquivo: c:\Users\bruno\Desktop\Monitorartags\taglist.csv
+434 tags encontradas
+Arquivo Excel salvo: c:\Users\bruno\Desktop\Monitorartags\tags_deloitte_output.xlsx
+Conversao concluida! 434 tags processadas
+
+Resumo por tipo de dados:
+Data Type
+String    288
+Float     146
+
+============================================================
+Processo finalizado com sucesso!
+============================================================
+
+Preview das primeiras 5 tags:
+                           IP21 TagName Data Type                                   Description
+0  FMA1.Debulha.Aeration.2101.0.hibrido    String  FMA1 - Debulha - Aeration - 2101.0 - hibrido
+1  FMA1.Debulha.Aeration.2102.0.hibrido    String  FMA1 - Debulha - Aeration - 2102.0 - hibrido
+2  FMA1.Debulha.Aeration.2103.0.hibrido    String  FMA1 - Debulha - Aeration - 2103.0 - hibrido
+3  FMA1.Debulha.Aeration.2104.0.hibrido    String  FMA1 - Debulha - Aeration - 2104.0 - hibrido
+4  FMA1.Debulha.Aeration.2105.0.hibrido    String  FMA1 - Debulha - Aeration - 2105.0 - hibrido

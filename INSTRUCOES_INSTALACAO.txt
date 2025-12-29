@@ -1,0 +1,180 @@
+============================================
+ INSTRUCOES DE INSTALACAO - SEED LOSS MONITOR
+ Versao para Servico Windows
+============================================
+
+ARQUIVOS NECESSARIOS:
+---------------------
+1. cam_monitor_service.py  - Script principal (versao servico)
+2. tags_config.csv         - Configuracao das tags OPC
+3. run_service.bat         - Script wrapper
+4. install_nssm_service.bat - Instalador NSSM
+5. install_task_scheduler.ps1 - Instalador Task Scheduler
+6. cleanup_cache.bat       - Script de limpeza
+
+PREPARACAO:
+-----------
+1. Copie todos os arquivos para:
+   C:\Users\whs913\Desktop\kepserver_env
+
+2. Verifique se o ambiente virtual existe:
+   C:\Users\whs913\Desktop\kepserver_env\venv\
+
+3. Se nao existir, crie:
+   cd C:\Users\whs913\Desktop\kepserver_env
+   python -m venv venv
+   venv\Scripts\activate
+   pip install pyodbc opcua
+
+============================================
+ OPCAO 1: INSTALAR VIA NSSM (RECOMENDADO)
+============================================
+
+NSSM (Non-Sucking Service Manager) e a melhor opcao para
+servicos Python pois oferece:
+- Reinicio automatico em caso de falha
+- Logs de saida
+- Controle facil via linha de comando
+
+PASSOS:
+
+1. Baixe o NSSM:
+   https://nssm.cc/download
+   
+2. Extraia nssm.exe para:
+   C:\Users\whs913\Desktop\kepserver_env\nssm.exe
+
+3. Execute como ADMINISTRADOR:
+   install_nssm_service.bat
+
+4. Comandos uteis depois de instalado:
+
+   # Ver status
+   nssm status SeedLossMonitor
+
+   # Iniciar
+   nssm start SeedLossMonitor
+
+   # Parar
+   nssm stop SeedLossMonitor
+
+   # Reiniciar
+   nssm restart SeedLossMonitor
+
+   # Editar configuracoes
+   nssm edit SeedLossMonitor
+
+   # Remover servico
+   nssm remove SeedLossMonitor
+
+============================================
+ OPCAO 2: INSTALAR VIA TASK SCHEDULER
+============================================
+
+Use esta opcao se nao quiser instalar NSSM.
+
+PASSOS:
+
+1. Abra PowerShell como ADMINISTRADOR
+
+2. Habilite execucao de scripts (se necessario):
+   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+3. Execute o script:
+   cd C:\Users\whs913\Desktop\kepserver_env
+   .\install_task_scheduler.ps1
+
+4. Comandos uteis:
+
+   # PowerShell - Iniciar
+   Start-ScheduledTask -TaskName "SeedLossMonitor"
+
+   # PowerShell - Parar
+   Stop-ScheduledTask -TaskName "SeedLossMonitor"
+
+   # PowerShell - Status
+   Get-ScheduledTask -TaskName "SeedLossMonitor" | Get-ScheduledTaskInfo
+
+   # CMD - Iniciar
+   schtasks /run /tn "SeedLossMonitor"
+
+   # CMD - Status
+   schtasks /query /tn "SeedLossMonitor"
+
+============================================
+ CONFIGURAR LIMPEZA AUTOMATICA DE CACHE
+============================================
+
+Para evitar acumulo de logs e cache, agende a limpeza:
+
+OPCAO A - Via Task Scheduler (PowerShell Admin):
+
+$Action = New-ScheduledTaskAction -Execute "C:\Users\whs913\Desktop\kepserver_env\cleanup_cache.bat" -Argument "auto"
+$Trigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Sunday -At 3am
+Register-ScheduledTask -TaskName "SeedLossCleanup" -Action $Action -Trigger $Trigger -Description "Limpeza semanal de cache"
+
+OPCAO B - Via CMD (Admin):
+
+schtasks /create /tn "SeedLossCleanup" /tr "C:\Users\whs913\Desktop\kepserver_env\cleanup_cache.bat auto" /sc weekly /d SUN /st 03:00
+
+============================================
+ VERIFICAR SE ESTA FUNCIONANDO
+============================================
+
+1. Verifique os logs:
+   C:\Users\whs913\Desktop\kepserver_env\logs\seed_loss_monitor.log
+
+2. Verifique o servico (NSSM):
+   nssm status SeedLossMonitor
+
+3. Verifique a tarefa (Task Scheduler):
+   schtasks /query /tn "SeedLossMonitor" /v
+
+4. Verifique se dados estao sendo inseridos no SQL:
+   SELECT TOP 10 * FROM seed_loss ORDER BY id DESC
+
+============================================
+ SOLUCAO DE PROBLEMAS
+============================================
+
+PROBLEMA: Servico nao inicia
+SOLUCAO: 
+- Verifique se Python esta instalado corretamente
+- Verifique os logs em C:\Users\whs913\Desktop\kepserver_env\logs\
+- Execute manualmente para ver erros:
+  cd C:\Users\whs913\Desktop\kepserver_env
+  python cam_monitor_service.py
+
+PROBLEMA: Erro de conexao OPC
+SOLUCAO:
+- Verifique se KEPServer esta rodando
+- Verifique IP e porta no script
+- Teste conexao: telnet 10.130.106.61 49320
+
+PROBLEMA: Erro de conexao SQL
+SOLUCAO:
+- Verifique se SQL Server esta acessivel
+- Verifique credenciais (Trusted_Connection)
+- Dados serao salvos em backup CSV se SQL falhar
+
+PROBLEMA: Alto uso de memoria
+SOLUCAO:
+- Execute cleanup_cache.bat
+- Verifique tamanho dos logs
+- O script limpa cache automaticamente a cada hora
+
+============================================
+ CONTATO / SUPORTE
+============================================
+
+Logs principais:
+- C:\Users\whs913\Desktop\kepserver_env\logs\seed_loss_monitor.log
+- C:\Users\whs913\Desktop\kepserver_env\logs\service_stdout.log (NSSM)
+- C:\Users\whs913\Desktop\kepserver_env\logs\service_stderr.log (NSSM)
+
+Backup de dados (quando SQL falha):
+- C:\Users\whs913\Desktop\kepserver_env\backup_seed_loss.csv
+
+============================================
+
+
