@@ -1,41 +1,96 @@
 # Industrial Data Pipeline & Tag Automation
 
-Este repositório contém ferramentas para automação industrial, divididas em dois módulos principais: monitoramento de dados (OT -> IT) e automação de engenharia (criação de tags).
+Tooling for industrial automation, split into two core modules:
 
-## 📂 Estrutura do Projeto
+- **OT → IT monitoring** (OPC UA data collection and persistence to SQL Server)
+- **Engineering automation** (bulk tag creation in KepServerEX via REST)
 
-### 1. `monitor_service/` (Serviço de Coleta)
-Serviço crítico para execução 24/7 em chão de fábrica.
-*   **Função:** Coleta dados via OPC UA e persiste no SQL Server.
-*   **Destaques:** Proteção contra perda de dados (buffer local CSV), limpeza automática de cache e integração com serviços Windows.
-*   **Portas:** Usa porta OPC UA (default: 49320) e SQL Server (1433/1600).
+Designed to be **scalable**, **maintainable**, and suitable for **24/7 shop-floor operation**.
 
-### 2. `tag_automation/` (Engenharia)
-Ferramentas para ganho de produtividade na configuração do SCADA/OPC.
-*   **Função:** Criação em massa de tags no KepServerEX via API REST.
-*   **Destaques:** Converte listas CSV/Excel em configuração de tags, economizando horas de trabalho manual.
-*   **Portas:** Usa porta HTTP/REST do KepServer (default: 57412).
+---
 
-### 3. `utils/`
-Scripts auxiliares e testes.
+## 📁 Repository Layout
 
-## 🚀 Como Usar
+### `monitor_service/` — Data Collection Service (24/7)
 
-### Instalação Geral
+Mission-critical service intended to run continuously on the plant network.
+
+**What it does**
+- Reads process data via **OPC UA**
+- Persists it into **SQL Server**
+
+**Key features**
+- Data-loss protection via a **local CSV buffer**
+- **Automatic cache cleanup**
+- Ready to run as a **Windows Service**
+
+**Ports**
+- OPC UA: `49320` (default)
+- SQL Server: `1433` / `1600`
+
+---
+
+### `tag_automation/` — Tag Engineering Automation
+
+Productivity tooling for SCADA/OPC configuration.
+
+**What it does**
+- Creates tags in **KepServerEX** in bulk via **REST API**
+
+**Key features**
+- Converts **CSV/Excel tag lists** into tag configuration payloads
+- Saves hours of manual setup
+
+**Ports**
+- KepServer REST/HTTP: `57412` (default)
+
+---
+
+### `utils/`
+
+Helper scripts and test utilities.
+
+---
+
+## 🚀 Quick Start
+
+### Install dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### Para rodar o Monitoramento
-1.  Configure as variáveis no arquivo `monitor_service/cam_monitor_service.py` ou `config.ini`.
-2.  Instale como serviço usando os scripts na pasta `monitor_service/`.
+---
 
-### Para criar Tags
-1.  Edite sua lista de tags em `tag_automation/taglist.csv`.
-2.  Execute:
-    ```bash
-    python tag_automation/create_tag2.py
-    ```
+## ▶️ Run the Monitoring Service
+
+1. Configure variables in:
+   - `monitor_service/cam_monitor_service.py` **or**
+   - `config.ini`
+
+2. Install it as a Windows Service using the scripts under:
+   - `monitor_service/`
 
 ---
-*Organizado para escalabilidade e manutenção.*
+
+## 🏷️ Create Tags (KepServerEX)
+
+1. Update your tag list:
+   - `tag_automation/taglist.csv`
+
+2. Run:
+
+```bash
+python tag_automation/create_tag2.py
+```
+
+---
+
+## Notes
+
+- Default ports are documented above; adjust them if your environment uses different mappings.
+- This repository keeps the **runtime collector** (monitoring) separated from **engineering utilities** (tag automation), which helps long-term maintenance.
+
+---
+
+*Built for scalability and long-term maintainability.*
